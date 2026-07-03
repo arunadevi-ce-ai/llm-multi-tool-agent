@@ -72,3 +72,6 @@ I wanted to understand tool-calling at the mechanical level — what the API act
 - [ ] Add a third tool connected to cloud infrastructure (e.g. checking an AWS service status or a GitHub repo's latest commit)
 - [ ] Wrap as an interactive CLI loop with persistent conversation memory
 
+## Demo
+
+![Demo of the agent answering a multi-tool question](Animation_weather_stock_agent.gif)
