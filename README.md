@@ -48,10 +48,8 @@ I wanted to understand tool-calling at the mechanical level — what the API act
    pip install -r requirements.txt
    ```
 
-3. Copy `.env.example` to `.env` and add your own keys:
-   ```bash
-   cp .env.example .env
-   ```
+3. create `.env` and add your own keys:
+
    - Get an OpenAI key at https://platform.openai.com
    - Get a free Alpha Vantage key at https://www.alphavantage.co/support/#api-key
 
@@ -74,6 +72,3 @@ I wanted to understand tool-calling at the mechanical level — what the API act
 - [ ] Add a third tool connected to cloud infrastructure (e.g. checking an AWS service status or a GitHub repo's latest commit)
 - [ ] Wrap as an interactive CLI loop with persistent conversation memory
 
-## About me
-
-Cloud/DevOps engineer (AWS, GCP, Terraform, Kubernetes) learning to build and deploy agentic AI systems on top of existing infrastructure skills. [Add your LinkedIn / portfolio link here]
