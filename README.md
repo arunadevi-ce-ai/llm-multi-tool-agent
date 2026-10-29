@@ -24,6 +24,17 @@ Tool result: $393.45
 The weather in Singapore is 29.5°C with 71% humidity, and TSLA is trading at $393.45.
 ```
 
+## Architecture
+
+![Architecture of the tool-calling loop: question, first LLM call, Python router, external APIs, tool results matched by call_id, second LLM call, final answer](assets/architecture.png)
+
+## Two versions
+
+- **`weather_stock_agent.py`** — the tool-calling loop done by hand with the OpenAI Responses API: routing each tool call to the right Python function, matching results back by `call_id`, and making a second call so the model can write the final answer.
+- **`weather_stock_agent_Langchain.py`** — the same agent in about 50 lines, using LangChain's `@tool` decorator and `create_agent`.
+
+The framework hides the parts the manual version spells out: `@tool` builds the JSON schema from the function's signature and docstring, and `create_agent` runs the call → execute → respond loop, including the `call_id` matching, in a single `invoke()`.
+
 ## Why I built this
 
 I wanted to understand tool-calling at the mechanical level — what the API actually sends and expects — before relying on a framework like LangChain to automate it. This project deliberately does **not** use an agent framework, so every step (routing tool calls, matching `call_id`s, handling multiple simultaneous tool calls, sending results back for a final answer) is visible and understood, not abstracted away.
@@ -39,7 +50,7 @@ I wanted to understand tool-calling at the mechanical level — what the API act
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/<your-username>/llm-multi-tool-agent.git
+   git clone https://github.com/arunadevi-ce-ai/llm-multi-tool-agent.git
    cd llm-multi-tool-agent
    ```
 
@@ -49,6 +60,10 @@ I wanted to understand tool-calling at the mechanical level — what the API act
    ```
 
 3. create `.env` and add your own keys:
+   ```
+   OPENAI_API_KEY=your-openai-key
+   ALPHA_VANTAGE_API_KEY=your-alpha-vantage-key
+   ```
 
    - Get an OpenAI key at https://platform.openai.com
    - Get a free Alpha Vantage key at https://www.alphavantage.co/support/#api-key
@@ -56,6 +71,12 @@ I wanted to understand tool-calling at the mechanical level — what the API act
 4. Run it:
    ```bash
    python weather_stock_agent.py
+   ```
+
+   Or run the LangChain version (it needs two extra packages that aren't in `requirements.txt` yet):
+   ```bash
+   pip install langchain langchain-openai
+   python weather_stock_agent_Langchain.py
    ```
 
 ## Design notes / things I learned
@@ -67,7 +88,8 @@ I wanted to understand tool-calling at the mechanical level — what the API act
 
 ## Possible next steps
 
-- [ ] Rebuild this using LangChain's `@tool` decorator and agent executor, and compare against this manual version
+- [x] Rebuild this using LangChain's `@tool` decorator and agent executor, and compare against this manual version
+- [ ] Loop until the model stops requesting tools (currently one round of tool calls)
 - [ ] Add caching to avoid redundant API calls / rate-limit issues
 - [ ] Add a third tool connected to cloud infrastructure (e.g. checking an AWS service status or a GitHub repo's latest commit)
 - [ ] Wrap as an interactive CLI loop with persistent conversation memory
